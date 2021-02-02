@@ -1,0 +1,589 @@
+tags:
+  - name: user authorization
+    description: Logging in and signing up
+  - name: resources
+    description: Accessing database resources
+
+schemes:
+  - https
+  - http
+
+# definitions
+definitions:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  users:
+    type: object
+    required:
+      - email
+      - password
+    properties:
+      id:
+        description: user Id
+      email:
+        type: string
+        description: user Email
+        example: email@email.com
+      password:
+        type: string
+        description: user Password
+        example: password
+  authresponse:
+    type: object
+    properties:
+      token:
+        description: Authorization token
+        type: string
+        example: JSWONWEBTOKEN
+      message:
+        type: string
+        description: json web token
+        example: signin | signup
+  indexresponse:
+    type: object
+    properties:
+      films:
+        type: string
+        example: /res/films
+      people:
+        type: string
+        example: /res/people
+      planets:
+        type: string
+        example: /res/planets
+      species:
+        type: string
+        example: res/species
+      starships:
+        type: string
+        example: res/starships
+      vehicles:
+        type: string
+        example: res/vehicles
+    securitySchemes:
+      bearerAuth:
+        type: http
+        scheme: bearer
+        bearerFormat: JWT
+  categories:
+    type: string
+    enum: [people, films, starships, vehicles, species, planets ]
+    example: films
+  authorizationHeader:
+    type: string
+    example: Bearer JSONWEBTOKEN
+  queryResults:
+    type: array
+    example: [{ schema: Item schema depends on category }, { types: Check below }]
+  peopleSchema:
+    type: object
+    properties: 
+      starships:
+        type: array
+        description: An array of starship resources that this person has piloted
+      edited:
+        type: string
+        description: the ISO 8601 date format of the time that this resource was edited.
+        format: date-time
+      name:
+        type: string
+        description: The name of this person.
+      created:
+        type: string
+        description: The ISO 8601 date format of the time that this resource was created.
+        format: date-time
+      url:
+        type: string
+        description: The url of this resource
+        format: uri
+      gender:
+        type: string
+        description: The gender of this person (if known).
+      vehicles:
+        type: array
+        description: An array of vehicle resources that this person has piloted
+      skin_color:
+        type: string
+        description: The skin color of this person.
+      hair_color:
+        type: string
+        description: The hair color of this person.
+      height:
+        type: string
+        description: The height of this person in meters.
+      eye_color:
+        type: string
+        description: The eye color of this person.
+      mass:
+        type: string
+        description: The mass of this person in kilograms.
+      films:
+        type: array
+        description: An array of urls of film resources that this person has been in.
+      species:
+        type: array
+        description: The url of the species resource that this person is.
+      homeworld:
+        type: string
+        description: The url of the planet resource that this person was born on.
+      birth_year:
+        type: string
+        description: The birth year of this person. BBY (Before the Battle of Yavin) or ABY (After the Battle of Yavin).
+  filmsSchema:
+    type: object
+    properties:
+      starships:
+        type: array
+        description: The starship resources featured within this film.
+      edited:
+        type: string
+        description: the ISO 8601 date format of the time that this resource was edited.
+        format: date-time
+      planets:
+        type: array
+        description: The planet resources featured within this film.
+      producer:
+        type: string
+        description: The producer(s) of this film.
+      title:
+        type: string
+        description: The title of this film.
+      url:
+        type: string
+        description: The url of this resource
+        format: uri
+      release_date:
+        type: string
+        description: The release date at original creator country.
+        format: date
+      vehicles:
+        type: array
+        description: The vehicle resources featured within this film.
+      episode_id:
+        type: integer
+        description: The episode number of this film.
+      director:
+        type: string
+        description: The director of this film.
+      created:
+        type: string
+        description: The ISO 8601 date format of the time that this resource was created.
+        format: date-time
+      opening_crawl:
+        type: string
+        description: The opening crawl text at the beginning of this film.
+      characters:
+        type: array
+        description: The people resources featured within this film.
+      species:
+        type: array
+        description: The species resources featured within this film.
+  starshipsSchema:
+    type: object
+    properties:
+      passengers:
+        type: string
+        description: The number of non-essential people this starship can transport.
+      pilots:
+        type: array
+        description: An array of People URL Resources that this starship has been piloted by.
+      name:
+        type: string
+        description: The name of this starship. The common name, such as Death Star.
+      hyperdrive_rating:
+        type: string
+        description: The class of this starships hyperdrive.
+      url:
+        type: string
+        description: The hypermedia URL of this resource.
+        format: uri
+      cargo_capacity:
+        type: string
+        description: The maximum number of kilograms that this starship can transport.
+      edited:
+        type: string
+        description: the ISO 8601 date format of the time that this resource was edited.
+        format: date-time
+      consumables:
+        type: string
+        description: The maximum length of time that this starship can provide consumables for its entire crew without having to resupply.
+      max_atmosphering_speed:
+        type: string
+        description: The maximum speed of this starship in atmosphere. n/a if this starship is incapable of atmosphering flight.
+      crew:
+        type: string
+        description: The number of personnel needed to run or pilot this starship.
+      length:
+        type: string
+        description: The length of this starship in meters.
+      MGLT:
+        type: string
+        description: The Maximum number of Megalights this starship can travel in a standard hour. A Megalight is a standard unit of distance and has never been defined before within the Star Wars universe. This figure is only really useful for measuring the difference in speed of starships. We can assume it is similar to AU, the distance between our Sun (Sol) and Earth.
+      starship_class:
+        type: string
+        description: The class of this starship, such as Starfighter or Deep Space Mobile Battlestation.
+      created:
+        type: string
+        description: The ISO 8601 date format of the time that this resource was created.
+        format: date-time
+      films:
+        type: array
+        description: An array of Film URL Resources that this starship has appeared in.
+      model:
+        type: string
+        description: The model or official name of this starship. Such as T-65 X-wing or DS-1 Orbital Battle Station.
+      cost_in_credits:
+        type: string
+        description: The cost of this starship new, in galactic credits.
+      manufacturer:
+        type: string
+        description: The manufacturer of this starship. Comma seperated if more than one.
+  vehiclesSchema:
+    type: object
+    properties:
+      vehicle_class:
+        type: string
+        description: The class of this vehicle, such as Wheeled.
+      passengers:
+        type: string
+        description: The number of non-essential people this vehicle can transport.
+      pilots:
+        type: array
+        description: An array of People URL Resources that this vehicle has been piloted by.
+      name:
+        type: string
+        description: The name of this vehicle. The common name, such as Sand Crawler.
+      created:
+        type: string
+        description: The ISO 8601 date format of the time that this resource was created.
+        format: date-time
+      url:
+        type: string
+        description: The hypermedia URL of this resource.
+        format: uri
+      cargo_capacity:
+        type: string
+        description: The maximum number of kilograms that this vehicle can transport.
+      edited:
+        type: string
+        description: the ISO 8601 date format of the time that this resource was edited.
+        format: date-time
+      consumables:
+        type: string
+        description: The maximum length of time that this vehicle can provide consumables for its entire crew without having to resupply.
+      max_atmosphering_speed:
+        type: string
+        description: The maximum speed of this vehicle in atmosphere.
+      crew:
+        type: string
+        description: The number of personnel needed to run or pilot this vehicle.
+      length:
+        type: string
+        description: The length of this vehicle in meters.
+      films:
+        type: array
+        description: An array of Film URL Resources that this vehicle has appeared in.
+      model:
+        type: string
+        description: The model or official name of this vehicle. Such as All Terrain Attack Transport.
+      cost_in_credits:
+        type: string
+        description: The cost of this vehicle new, in galactic credits.
+      manufacturer:
+        type: string
+        description: The manufacturer of this vehicle. Comma separated if more than one.
+  speciesSchema:
+    type: object
+    properties:
+      edited:
+        type: string
+        description: The ISO 8601 date format of the time that this resource was edited.
+        format: date-time
+      name:
+        type: string
+        description: The name of this species.
+      classification:
+        type: string
+        description: The classification of this species.
+      people:
+        type: array
+        description: An array of People URL Resources that are a part of this species.
+      eye_colors:
+        type: string
+        description: A comma-seperated string of common eye colors for this species, none if this species does not typically have eyes.
+      created:
+        type: string
+        description: The ISO 8601 date format of the time that this resource was created.
+        format: date-time
+      designation:
+        type: string
+        description: The designation of this species.
+      skin_colors:
+        type: string
+        description: A comma-seperated string of common skin colors for this species, none if this species does not typically have skin.
+      language:
+        type: string
+        description: The language commonly spoken by this species.
+      url:
+        type: string
+        description: The hypermedia URL of this resource.
+        format: uri
+      hair_colors:
+        type: string
+        description: A comma-seperated string of common hair colors for this species, none if this species does not typically have hair.
+      homeworld:
+        type: string
+        description: The URL of a planet resource, a planet that this species originates from.
+      films:
+        type: array
+        description: " An array of Film URL Resources that this species has appeared in."
+      average_lifespan:
+        type: string
+        description: The average lifespan of this species in years.
+      average_height:
+        type: string
+        description: The average height of this person in centimeters.
+  planetsSchema:
+    type: object
+    properties:
+      diameter:
+        type: string
+        description: The diameter of this planet in kilometers.
+      climate:
+        type: string
+        description: The climate of this planet. Comma-seperated if diverse.
+      surface_water:
+        type: string
+        description: The percentage of the planet surface that is naturally occuring water or bodies of water.
+      name:
+        type: string
+        description: The name of this planet.
+      created:
+        type: string
+        description: The ISO 8601 date format of the time that this resource was created.
+        format: date-time
+      url:
+        type: string
+        description: The hypermedia URL of this resource.
+        format: uri
+      rotation_period:
+        type: string
+        description: The number of standard hours it takes for this planet to complete a single rotation on its axis.
+      edited:
+        type: string
+        description: the ISO 8601 date format of the time that this resource was edited.
+        format: date-time
+      terrain:
+        type: string
+        description: the terrain of this planet. Comma-seperated if diverse.
+      gravity:
+        type: string
+        description: A number denoting the gravity of this planet. Where 1 is normal.
+      orbital_period:
+        type: string
+        description: The number of standard days it takes for this planet to complete a single orbit of its local star.
+      films:
+        type: array
+        description: An array of Film URL Resources that this planet has appeared in.
+      residents:
+        type: array
+        description: An array of People URL Resources that live on this planet.
+      population:
+        type: string
+        description: The average population of sentient beings inhabiting this planet.
+
+
+
+      
+
+
+
+paths:
+  # [POST] /auth/signup
+  /auth/signup:
+    post:
+      summary: Try to create new user and. If successful assigns random character from Star Wars API to user and returns json web token for authorizing /res/ routes.
+      description: Try to create new user. If user's email is not yet registered, account should be created and random character from Star Wars API is assigned to user. This endpoint returns json web token used for authorizing resources routes. The token expires 1 day after creation.
+      tags:
+        - user authorization
+      parameters:
+        - name: body
+          in: body
+          description: user Data
+          required: true
+          schema:
+            $ref: '#/definitions/users'
+      responses:
+        201:
+          description: Created
+          schema:
+            $ref: '#/definitions/authresponse'
+        400:
+          description: Bad request. Check email and password.
+        409:
+          description: This email is already in use.
+
+  # [POST] /auth/signin
+  /auth/signin:
+    post:
+      summary: Try to log in. Generates and returns new json web token (valid for 1 day), invalidates older token if exists.
+      description: Try to log in. If email and password are not validated denies service. If authorization is successful, generate and return a new JSON web token valid for 1 day. Doesn't invalidate existing tokens.
+      tags:
+        - user authorization
+      parameters:
+        - name: body
+          in: body
+          description: user Data
+          required: true
+          schema:
+            $ref: '#/definitions/users'
+      responses:
+        200:
+          description: Signed in
+          schema:
+            $ref: '#/definitions/authresponse'
+        400:
+          description: Credentials required - check if email and password is attached.
+        409:
+          description: Invalid credentials
+
+  # [DELETE] /auth
+  /auth:
+    delete:
+      summary: Delete user account
+      description: Delete user's account from database. Requires user's email and password
+      tags:
+        - user authorization
+      parameters:
+        - in: body
+          name: body
+          description: user data
+          required: true
+          schema:
+            $ref: '#/definitions/users'
+      responses:
+        202:
+          description: Account successfully deleted.
+          schema:
+            type: object
+            example: {}
+        400:
+          description: Bad request - check request body.
+        404:
+          description: User not found. Check email.
+        409:
+          description: Unauthorized.
+
+  # [GET] /res
+  /res:
+    get:
+      summary: Get a list of available resources and their addresses
+      tags:
+        - resources
+      responses:
+        201:
+          description: Index
+          schema:
+            $ref: '#/definitions/indexresponse'
+
+  # [GET] /res/:category
+  /res/{category}:
+    get:
+      summary: Get all resources from selected category
+      description: Get all resources from selected category. Returns items that are relevant to your account character. Requires authorization.
+      tags:
+        - resources
+      parameters:
+        - in: path
+          name: category
+          required: true
+          description: Fetch data from selected category. Accepts films, people, planets, species, starships, vehicles.
+          schema:
+            $ref: '#/definitions/categories'
+        - in: header
+          name: Authorization
+          description: Bearer token, recived from /auth/signup and /auth/signin routes.          
+          required: true
+          schema:
+            $ref: '#/definitions/authorizationHeader'
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Resources found.
+          schema:
+            $ref: '#/definitions/queryResults'
+        400:
+          description: Bad category - must be a string with no numbers and no special signs. Case insensitive.
+        401:
+          description: Unauthorized. Token not authorized.
+        409:
+          description: Unknown category. Check with acceptable categories.
+
+  /res/{category}/{id}:
+    get:
+      summary: Get selected item from selected category.
+      description: Get item from selected category with set Id. Item must be relevant to your account character. Requires authorization.
+      tags:
+        - resources
+      parameters:
+        - in: path
+          name: category
+          required: true
+          description: Select item category. Accepts films, people, planets, species, starships, vehicles. 
+          schema:
+            $ref: '#/definitions/categories'
+        - in: path
+          name: id
+          required: true
+          description: Select which item from set category should be retrieved.
+          schema:
+            type: number
+            example: 1
+        - in: header
+          name: Authorization
+          description: Bearer token, recived from /auth/signup and /auth/signin routes.
+          required: true
+          schema: 
+            $ref: '#/definitions/authorizationHeader'
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Item found and authorized.
+          schema:
+            type: object
+            example: { itemSchema: 'depends on category' }
+        400:
+          description: Invalid request parameters - check error. Id, category and/or token is invalid.
+        401:
+          description: Authorization failed - invalid token or irrelevant hero.
+        404:
+          description: Item not found. 
+        409:
+          description: Invalid category. Check with available categories.
+
+/res/{category}/schema:
+    get:
+      summary: Get selected category schema.
+      description: Get schema of selected category. Does not require any authorization
+      tags:
+        - resources
+      parameters:
+        - in: path
+          name: category
+          required: true
+          description: Select item category. Accepts films, people, planets, species, starships, vehicles.
+          schema:
+            $ref: '#/definitions/categories'
+      responses:
+        200:
+          description: Category schema found.
+          schema:
+            type: object
+            example: { itemSchema: 'depends on category' }
+        400:
+          description: Invalid category. Check message for possible error.
